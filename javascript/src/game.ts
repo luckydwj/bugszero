@@ -6,13 +6,11 @@ export class Game {
   currentPlayer: number;
   sportsQuestions: any[];
   scienceQuestions: any[];
-  inPenaltyBox: any[];
   popQuestions: any[];
   players: any[];
 
   constructor() {
     this.players = [];
-    this.inPenaltyBox = new Array(6);
 
     this.popQuestions = [];
     this.scienceQuestions = [];
@@ -32,15 +30,13 @@ export class Game {
 
   add(playerName) {
     this.players.push(new Player(playerName));
-    this.inPenaltyBox[this.players.length - 1] = false;
-
     console.log(`They are player number ${this.players.length}`);
-
     return true;
   }
 
   currentCategory() {
     const playerPlaces = this.getCurrentPlayerPlaces();
+
     if (playerPlaces == 0 || playerPlaces == 4 || playerPlaces == 8)
       return "Pop";
     if (playerPlaces == 1 || playerPlaces == 5 || playerPlaces == 9)
@@ -74,7 +70,7 @@ export class Game {
     console.log(`${this.getCurrentPlayerName()} is the current player`);
     console.log(`They have rolled a ${roll}`);
 
-    if (this.inPenaltyBox[this.currentPlayer]) {
+    if (this.getCurrentPlayer().isPenaltyBox) {
       if (roll % 2 != 0) {
         this.isGettingOutOfPenaltyBox = true;
 
@@ -99,7 +95,7 @@ export class Game {
   }
 
   wasCorrectlyAnswered() {
-    if (this.inPenaltyBox[this.currentPlayer]) {
+    if (this.getCurrentPlayer().isPenaltyBox) {
       if (this.isGettingOutOfPenaltyBox) {
         return this.correctAnswer();
       } else {
@@ -128,7 +124,7 @@ export class Game {
   wrongAnswer() {
     console.log("Question was incorrectly answered");
     console.log(`${this.getCurrentPlayerName()} was sent to the penalty box`);
-    this.inPenaltyBox[this.currentPlayer] = true;
+    this.getCurrentPlayer().updatePensltyBox(true);
 
     this.currentPlayer += 1;
     if (this.currentPlayer == this.players.length) this.currentPlayer = 0;

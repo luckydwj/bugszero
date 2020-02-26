@@ -5,6 +5,7 @@ export class Player {
   private readonly playerName: string;
   private _goldCoins: number = 0;
   private _place: number = 0;
+  private _isPenaltyBox: boolean = false;
   constructor(name) {
     this.playerName = name;
     console.log(`${name} was added`);
@@ -24,6 +25,14 @@ export class Player {
       this._place = this._place - 12;
     }
     console.log(`${this.playerName}'s new location is ${this._place}`);
+  }
+
+  updatePensltyBox(flag) {
+    this._isPenaltyBox = flag;
+  }
+
+  get isPenaltyBox(): boolean {
+    return this._isPenaltyBox;
   }
 
   get place(): number {
