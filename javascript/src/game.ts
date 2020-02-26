@@ -1,40 +1,35 @@
 export class Game {
-  rockQuestions: any[];
-  isGettingOutOfPenaltyBox: boolean;
-  currentPlayer: number;
-  sportsQuestions: any[];
-  scienceQuestions: any[];
+  rockQuestions: any[] = [];
+  sportsQuestions: any[] = [];
+  scienceQuestions: any[] = [];
+  popQuestions: any[] = [];
+
   inPenaltyBox: any[];
-  popQuestions: any[];
+
+  isGettingOutOfPenaltyBox: boolean = false;
+  currentPlayer: number = 0;
+
   value: any[];
-  places: any[];
+  position: any[];
   players: any[];
 
   constructor() {
     this.players = [];
-    this.places = new Array(6);
+    this.position = new Array(6);
     this.value = new Array(6);
     this.inPenaltyBox = new Array(6);
-
-    this.popQuestions = [];
-    this.scienceQuestions = [];
-    this.sportsQuestions = [];
-    this.rockQuestions = [];
-
-    this.currentPlayer = 0;
-    this.isGettingOutOfPenaltyBox = false;
 
     for (let i = 0; i < 50; i++) {
       this.popQuestions.push("Pop Question " + i);
       this.scienceQuestions.push("Science Question " + i);
       this.sportsQuestions.push("Sports Question " + i);
-      this.rockQuestions.push(this.createRockQuestion(i));
+      this.rockQuestions.push("Rock Question " + i);
     }
   }
 
   add(playerName) {
     this.players.push(playerName);
-    this.places[this.players.length - 1] = 0;
+    this.position[this.players.length - 1] = 0;
     this.value[this.players.length - 1] = 0;
     this.inPenaltyBox[this.players.length - 1] = false;
 
@@ -45,7 +40,7 @@ export class Game {
   }
 
   currentCategory() {
-    const places = this.places[this.currentPlayer];
+    const places = this.position[this.currentPlayer];
     if (places == 0 || places == 4 || places == 8) return "Pop";
     if (places == 1 || places == 5 || places == 9) return "Science";
     if (places == 2 || places == 6 || places == 10) return "Sports";
@@ -65,10 +60,6 @@ export class Game {
     if (this.currentCategory() == "Rock") {
       console.log(this.rockQuestions.shift());
     }
-  }
-
-  createRockQuestion(index) {
-    return `Rock Question ${index}`;
   }
 
   roll(roll) {
@@ -99,14 +90,16 @@ export class Game {
   }
 
   _movePlayerAndAskQuestion(roll) {
-    this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
-    if (this.places[this.currentPlayer] > 11) {
-      this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
+    this.position[this.currentPlayer] =
+      this.position[this.currentPlayer] + roll;
+    if (this.position[this.currentPlayer] > 11) {
+      this.position[this.currentPlayer] =
+        this.position[this.currentPlayer] - 12;
     }
 
     console.log(
       `${this.players[this.currentPlayer]}'s new location is ${
-        this.places[this.currentPlayer]
+        this.position[this.currentPlayer]
       }`
     );
     console.log(`The category is ${this.currentCategory()}`);
