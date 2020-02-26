@@ -1,3 +1,4 @@
+import { Player } from "./player";
 export class Game {
   rockQuestions: any[] = [];
   sportsQuestions: any[] = [];
@@ -28,7 +29,7 @@ export class Game {
   }
 
   add(playerName) {
-    this.players.push(playerName);
+    this.players.push(new Player(playerName));
     this.position[this.players.length - 1] = 0;
     this.value[this.players.length - 1] = 0;
     this.inPenaltyBox[this.players.length - 1] = false;
@@ -47,10 +48,6 @@ export class Game {
     return "Rock";
   }
 
-  getCurrentPlayerPosition() {
-    return this.position[this.currentPlayer];
-  }
-
   askQuestion() {
     if (this.currentCategory() == "Pop") {
       console.log(this.popQuestions.shift());
@@ -65,9 +62,7 @@ export class Game {
       console.log(this.rockQuestions.shift());
     }
   }
-  getCurrentPlayerPenaltyBox() {
-    return this.inPenaltyBox[this.currentPlayer];
-  }
+
   roll(roll) {
     console.log(`${this.getCurrentPlayer()} is the current player`);
     console.log(`They have rolled a ${roll}`);
@@ -152,5 +147,13 @@ export class Game {
 
   getCurrentPlayer() {
     return this.players[this.currentPlayer];
+  }
+
+  getCurrentPlayerPosition() {
+    return this.position[this.currentPlayer];
+  }
+
+  getCurrentPlayerPenaltyBox() {
+    return this.inPenaltyBox[this.currentPlayer];
   }
 }
