@@ -45,15 +45,10 @@ export class Game {
   }
 
   currentCategory() {
-    if (this.places[this.currentPlayer] == 0) return "Pop";
-    if (this.places[this.currentPlayer] == 4) return "Pop";
-    if (this.places[this.currentPlayer] == 8) return "Pop";
-    if (this.places[this.currentPlayer] == 1) return "Science";
-    if (this.places[this.currentPlayer] == 5) return "Science";
-    if (this.places[this.currentPlayer] == 9) return "Science";
-    if (this.places[this.currentPlayer] == 2) return "Sports";
-    if (this.places[this.currentPlayer] == 6) return "Sports";
-    if (this.places[this.currentPlayer] == 10) return "Sports";
+    const places = this.places[this.currentPlayer];
+    if (places == 0 || places == 4 || places == 8) return "Pop";
+    if (places == 1 || places == 5 || places == 9) return "Science";
+    if (places == 2 || places == 6 || places == 10) return "Sports";
     return "Rock";
   }
 
