@@ -46,10 +46,6 @@ export class Game {
     return true;
   }
 
-  getCurrentPlayerPlaces() {
-    return this.places[this.currentPlayer];
-  }
-
   currentCategory() {
     if (this.getCurrentPlayerPlaces() == 0) return "Pop";
     if (this.getCurrentPlayerPlaces() == 4) return "Pop";
@@ -80,10 +76,6 @@ export class Game {
 
   createRockQuestion(index) {
     return `Rock Question ${index}`;
-  }
-
-  getCurrentPlayer() {
-    return this.players[this.currentPlayer].name;
   }
 
   roll(roll) {
@@ -131,12 +123,10 @@ export class Game {
 
         this.value[this.currentPlayer] += 1;
         console.log(
-          `${this.getCurrentPlayer()} now has ${
-            this.value[this.currentPlayer]
-          } Gold Coins.`
+          `${this.getCurrentPlayer()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
         );
 
-        return !(this.value[this.currentPlayer] == 6);
+        return !(this.getCurrentPlayerValue() == 6);
       } else {
         this.currentPlayer += 1;
         if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
@@ -149,12 +139,10 @@ export class Game {
       if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
       this.value[this.currentPlayer] += 1;
       console.log(
-        `${this.getCurrentPlayer()} now has ${
-          this.value[this.currentPlayer]
-        } Gold Coins.`
+        `${this.getCurrentPlayer()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
       );
 
-      return !(this.value[this.currentPlayer] == 6);
+      return !(this.getCurrentPlayerValue() == 6);
     }
   }
 
@@ -166,5 +154,17 @@ export class Game {
     this.currentPlayer += 1;
     if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
     return true;
+  }
+
+  getCurrentPlayerPlaces() {
+    return this.places[this.currentPlayer];
+  }
+
+  getCurrentPlayer() {
+    return this.players[this.currentPlayer].name;
+  }
+
+  getCurrentPlayerValue() {
+    return this.value[this.currentPlayer];
   }
 }
