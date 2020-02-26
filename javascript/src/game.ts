@@ -8,12 +8,10 @@ export class Game {
   scienceQuestions: any[];
   inPenaltyBox: any[];
   popQuestions: any[];
-  places: any[];
   players: any[];
 
   constructor() {
     this.players = [];
-    this.places = new Array(6);
     this.inPenaltyBox = new Array(6);
 
     this.popQuestions = [];
@@ -34,7 +32,6 @@ export class Game {
 
   add(playerName) {
     this.players.push(new Player(playerName));
-    this.places[this.players.length - 1] = 0;
     this.inPenaltyBox[this.players.length - 1] = false;
 
     console.log(`They are player number ${this.players.length}`);
@@ -54,6 +51,7 @@ export class Game {
   }
 
   askQuestion() {
+    console.log(`The category is ${this.currentCategory()}`);
     if (this.currentCategory() == "Pop") {
       console.log(this.popQuestions.shift());
     }
@@ -96,15 +94,7 @@ export class Game {
   }
 
   _movePlayerAndAskQuestion(roll) {
-    this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() + roll;
-    if (this.getCurrentPlayerPlaces() > 11) {
-      this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() - 12;
-    }
-
-    console.log(
-      `${this.getCurrentPlayerName()}'s new location is ${this.getCurrentPlayerPlaces()}`
-    );
-    console.log(`The category is ${this.currentCategory()}`);
+    this.getCurrentPlayer().updatePlace(roll);
     this.askQuestion();
   }
 
@@ -146,7 +136,7 @@ export class Game {
   }
 
   getCurrentPlayerPlaces() {
-    return this.places[this.currentPlayer];
+    return this.getCurrentPlayer().place;
   }
   getCurrentPlayer() {
     return this.players[this.currentPlayer];

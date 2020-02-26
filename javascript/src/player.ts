@@ -18,6 +18,18 @@ export class Player {
     this._goldCoins += 1;
   }
 
+  updatePlace(roll) {
+    this._place = this._place + roll;
+    if (this._place > 11) {
+      this._place = this._place - 12;
+    }
+    console.log(`${this.playerName}'s new location is ${this._place}`);
+  }
+
+  get place(): number {
+    return this._place;
+  }
+
   get goldCoins(): number {
     return this._goldCoins;
   }
