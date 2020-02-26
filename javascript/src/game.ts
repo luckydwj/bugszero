@@ -44,16 +44,20 @@ export class Game {
     return true;
   }
 
+  getCurrentPlayerPlaces() {
+    return this.places[this.currentPlayer];
+  }
+
   currentCategory() {
-    if (this.places[this.currentPlayer] == 0) return "Pop";
-    if (this.places[this.currentPlayer] == 4) return "Pop";
-    if (this.places[this.currentPlayer] == 8) return "Pop";
-    if (this.places[this.currentPlayer] == 1) return "Science";
-    if (this.places[this.currentPlayer] == 5) return "Science";
-    if (this.places[this.currentPlayer] == 9) return "Science";
-    if (this.places[this.currentPlayer] == 2) return "Sports";
-    if (this.places[this.currentPlayer] == 6) return "Sports";
-    if (this.places[this.currentPlayer] == 10) return "Sports";
+    if (this.getCurrentPlayerPlaces() == 0) return "Pop";
+    if (this.getCurrentPlayerPlaces() == 4) return "Pop";
+    if (this.getCurrentPlayerPlaces() == 8) return "Pop";
+    if (this.getCurrentPlayerPlaces() == 1) return "Science";
+    if (this.getCurrentPlayerPlaces() == 5) return "Science";
+    if (this.getCurrentPlayerPlaces() == 9) return "Science";
+    if (this.getCurrentPlayerPlaces() == 2) return "Sports";
+    if (this.getCurrentPlayerPlaces() == 6) return "Sports";
+    if (this.getCurrentPlayerPlaces() == 10) return "Sports";
     return "Rock";
   }
 
@@ -76,8 +80,12 @@ export class Game {
     return `Rock Question ${index}`;
   }
 
+  getCurrentPlayer() {
+    return this.players[this.currentPlayer];
+  }
+
   roll(roll) {
-    console.log(`${this.players[this.currentPlayer]} is the current player`);
+    console.log(`${this.getCurrentPlayer()} is the current player`);
     console.log(`They have rolled a ${roll}`);
 
     if (this.inPenaltyBox[this.currentPlayer]) {
@@ -85,16 +93,12 @@ export class Game {
         this.isGettingOutOfPenaltyBox = true;
 
         console.log(
-          `${
-            this.players[this.currentPlayer]
-          } is getting out of the penalty box`
+          `${this.getCurrentPlayer()} is getting out of the penalty box`
         );
         this._movePlayerAndAskQuestion(roll);
       } else {
         console.log(
-          `${
-            this.players[this.currentPlayer]
-          } is not getting out of the penalty box`
+          `${this.getCurrentPlayer()} is not getting out of the penalty box`
         );
         this.isGettingOutOfPenaltyBox = false;
       }
@@ -104,15 +108,13 @@ export class Game {
   }
 
   _movePlayerAndAskQuestion(roll) {
-    this.places[this.currentPlayer] = this.places[this.currentPlayer] + roll;
+    this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() + roll;
     if (this.places[this.currentPlayer] > 11) {
-      this.places[this.currentPlayer] = this.places[this.currentPlayer] - 12;
+      this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() - 12;
     }
 
     console.log(
-      `${this.players[this.currentPlayer]}'s new location is ${
-        this.places[this.currentPlayer]
-      }`
+      `${this.getCurrentPlayer()}'s new location is ${this.getCurrentPlayerPlaces()}`
     );
     console.log(`The category is ${this.currentCategory()}`);
     this.askQuestion();
@@ -127,7 +129,7 @@ export class Game {
 
         this.value[this.currentPlayer] += 1;
         console.log(
-          `${this.players[this.currentPlayer]} now has ${
+          `${this.getCurrentPlayer()} now has ${
             this.value[this.currentPlayer]
           } Gold Coins.`
         );
@@ -145,7 +147,7 @@ export class Game {
       if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
       this.value[this.currentPlayer] += 1;
       console.log(
-        `${this.players[this.currentPlayer]} now has ${
+        `${this.getCurrentPlayer()} now has ${
           this.value[this.currentPlayer]
         } Gold Coins.`
       );
@@ -156,9 +158,7 @@ export class Game {
 
   wrongAnswer() {
     console.log("Question was incorrectly answered");
-    console.log(
-      `${this.players[this.currentPlayer]} was sent to the penalty box`
-    );
+    console.log(`${this.getCurrentPlayer()} was sent to the penalty box`);
     this.inPenaltyBox[this.currentPlayer] = true;
 
     this.currentPlayer += 1;
