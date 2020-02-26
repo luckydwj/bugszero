@@ -1,3 +1,5 @@
+import { Player } from "./player";
+
 export class Game {
   rockQuestions: any[];
   isGettingOutOfPenaltyBox: boolean;
@@ -33,7 +35,7 @@ export class Game {
   }
 
   add(playerName) {
-    this.players.push(playerName);
+    this.players.push(new Player(playerName));
     this.places[this.players.length - 1] = 0;
     this.value[this.players.length - 1] = 0;
     this.inPenaltyBox[this.players.length - 1] = false;
@@ -81,7 +83,7 @@ export class Game {
   }
 
   getCurrentPlayer() {
-    return this.players[this.currentPlayer];
+    return this.players[this.currentPlayer].name;
   }
 
   roll(roll) {
