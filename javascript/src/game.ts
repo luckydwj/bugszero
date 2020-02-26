@@ -8,14 +8,12 @@ export class Game {
   scienceQuestions: any[];
   inPenaltyBox: any[];
   popQuestions: any[];
-  value: any[];
   places: any[];
   players: any[];
 
   constructor() {
     this.players = [];
     this.places = new Array(6);
-    this.value = new Array(6);
     this.inPenaltyBox = new Array(6);
 
     this.popQuestions = [];
@@ -37,25 +35,21 @@ export class Game {
   add(playerName) {
     this.players.push(new Player(playerName));
     this.places[this.players.length - 1] = 0;
-    this.value[this.players.length - 1] = 0;
     this.inPenaltyBox[this.players.length - 1] = false;
 
-    console.log(`${playerName} was added`);
     console.log(`They are player number ${this.players.length}`);
 
     return true;
   }
 
   currentCategory() {
-    if (this.getCurrentPlayerPlaces() == 0) return "Pop";
-    if (this.getCurrentPlayerPlaces() == 4) return "Pop";
-    if (this.getCurrentPlayerPlaces() == 8) return "Pop";
-    if (this.getCurrentPlayerPlaces() == 1) return "Science";
-    if (this.getCurrentPlayerPlaces() == 5) return "Science";
-    if (this.getCurrentPlayerPlaces() == 9) return "Science";
-    if (this.getCurrentPlayerPlaces() == 2) return "Sports";
-    if (this.getCurrentPlayerPlaces() == 6) return "Sports";
-    if (this.getCurrentPlayerPlaces() == 10) return "Sports";
+    const playerPlaces = this.getCurrentPlayerPlaces();
+    if (playerPlaces == 0 || playerPlaces == 4 || playerPlaces == 8)
+      return "Pop";
+    if (playerPlaces == 1 || playerPlaces == 5 || playerPlaces == 9)
+      return "Science";
+    if (playerPlaces == 2 || playerPlaces == 6 || playerPlaces == 10)
+      return "Sports";
     return "Rock";
   }
 
@@ -79,7 +73,7 @@ export class Game {
   }
 
   roll(roll) {
-    console.log(`${this.getCurrentPlayer()} is the current player`);
+    console.log(`${this.getCurrentPlayerName()} is the current player`);
     console.log(`They have rolled a ${roll}`);
 
     if (this.inPenaltyBox[this.currentPlayer]) {
@@ -87,12 +81,12 @@ export class Game {
         this.isGettingOutOfPenaltyBox = true;
 
         console.log(
-          `${this.getCurrentPlayer()} is getting out of the penalty box`
+          `${this.getCurrentPlayerName()} is getting out of the penalty box`
         );
         this._movePlayerAndAskQuestion(roll);
       } else {
         console.log(
-          `${this.getCurrentPlayer()} is not getting out of the penalty box`
+          `${this.getCurrentPlayerName()} is not getting out of the penalty box`
         );
         this.isGettingOutOfPenaltyBox = false;
       }
@@ -103,12 +97,12 @@ export class Game {
 
   _movePlayerAndAskQuestion(roll) {
     this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() + roll;
-    if (this.places[this.currentPlayer] > 11) {
+    if (this.getCurrentPlayerPlaces() > 11) {
       this.places[this.currentPlayer] = this.getCurrentPlayerPlaces() - 12;
     }
 
     console.log(
-      `${this.getCurrentPlayer()}'s new location is ${this.getCurrentPlayerPlaces()}`
+      `${this.getCurrentPlayerName()}'s new location is ${this.getCurrentPlayerPlaces()}`
     );
     console.log(`The category is ${this.currentCategory()}`);
     this.askQuestion();
@@ -117,38 +111,33 @@ export class Game {
   wasCorrectlyAnswered() {
     if (this.inPenaltyBox[this.currentPlayer]) {
       if (this.isGettingOutOfPenaltyBox) {
-        console.log("Answer was correct!!!!");
-        this.currentPlayer += 1;
-        if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
-
-        this.value[this.currentPlayer] += 1;
-        console.log(
-          `${this.getCurrentPlayer()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
-        );
-
-        return !(this.getCurrentPlayerValue() == 6);
+        return this.correctAnswer();
       } else {
         this.currentPlayer += 1;
         if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
         return true;
       }
     } else {
-      console.log("Answer was correct!!!!");
-
-      this.currentPlayer += 1;
-      if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
-      this.value[this.currentPlayer] += 1;
-      console.log(
-        `${this.getCurrentPlayer()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
-      );
-
-      return !(this.getCurrentPlayerValue() == 6);
+      return this.correctAnswer();
     }
+  }
+
+  correctAnswer() {
+    console.log("Answer was correct!!!!");
+    this.currentPlayer += 1;
+    if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+
+    this.getCurrentPlayer().addValue();
+    console.log(
+      `${this.getCurrentPlayerName()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
+    );
+
+    return !(this.getCurrentPlayerValue() == 6);
   }
 
   wrongAnswer() {
     console.log("Question was incorrectly answered");
-    console.log(`${this.getCurrentPlayer()} was sent to the penalty box`);
+    console.log(`${this.getCurrentPlayerName()} was sent to the penalty box`);
     this.inPenaltyBox[this.currentPlayer] = true;
 
     this.currentPlayer += 1;
@@ -159,12 +148,14 @@ export class Game {
   getCurrentPlayerPlaces() {
     return this.places[this.currentPlayer];
   }
-
   getCurrentPlayer() {
-    return this.players[this.currentPlayer].name;
+    return this.players[this.currentPlayer];
+  }
+  getCurrentPlayerName() {
+    return this.getCurrentPlayer().name;
   }
 
   getCurrentPlayerValue() {
-    return this.value[this.currentPlayer];
+    return this.getCurrentPlayer().goldCoins;
   }
 }
