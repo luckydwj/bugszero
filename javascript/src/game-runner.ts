@@ -1,10 +1,6 @@
 import { Game } from "./game";
 
 export function gameRunner(simulator) {
-  // a simulator of a game
-
-
-
   const game = new Game();
 
   game.add("Chet");

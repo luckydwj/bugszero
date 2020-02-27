@@ -38,9 +38,14 @@ export class Game {
   start(simulator: Simulator) {
     let notAWinner = false;
     do {
-      this.roll(simulator.simulateRolling());
-      const isloaser = simulator.simulateAnswering();
-      notAWinner = isloaser ? this.wrongAnswer() : this.wasCorrectlyAnswered();
+      const shouldAnswerQuestionThisRound = this.roll(
+        simulator.simulateRolling()
+      );
+      const isWrongAnswer = simulator.simulateAnswering();
+      if (shouldAnswerQuestionThisRound) {
+        notAWinner = isWrongAnswer ? this.wrongAnswer() : this.correctAnswer();
+      }
+      this.setNextPlayer();
     } while (notAWinner);
   }
 
@@ -93,17 +98,18 @@ export class Game {
 
     if (this.getCurrentPlayer().isPenaltyBox) {
       if (roll % 2 != 0) {
-        this.isGettingOutOfPenaltyBox = true;
         this.getCurrentPlayer().freedFromPenaltyBox();
         this._movePlayerAndAskQuestion(roll);
+        return true;
       } else {
         console.log(
           `${this.getCurrentPlayerName()} is not getting out of the penalty box`
         );
-        this.isGettingOutOfPenaltyBox = false;
+        return false;
       }
     } else {
       this._movePlayerAndAskQuestion(roll);
+      return true;
     }
   }
 
@@ -112,38 +118,27 @@ export class Game {
     this.askQuestion();
   }
 
-  wasCorrectlyAnswered() {
-    if (this.getCurrentPlayer().isPenaltyBox) {
-      if (this.isGettingOutOfPenaltyBox) {
-        return this.correctAnswer();
-      } else {
-        this.setNextPlayer();
-        return true;
-      }
-    } else {
-      return this.correctAnswer();
-    }
-  }
-
   correctAnswer() {
     console.log("Answer was correct!!!!");
-    this.setNextPlayer();
     this.getCurrentPlayer().addValue();
-    return !(this.getCurrentPlayerValue() == 6);
+    return this.didCurrentPlayerWin();
+  }
+
+  private didCurrentPlayerWin() {
+    return this.getCurrentPlayer().didWin();
   }
 
   wrongAnswer() {
     console.log("Question was incorrectly answered");
-    console.log(`${this.getCurrentPlayerName()} was sent to the penalty box`);
-    this.getCurrentPlayer().updatePensltyBox(true);
-
-    this.setNextPlayer();
+    this.getCurrentPlayer().updatePensltyBox();
     return true;
   }
 
   setNextPlayer() {
     this.currentPlayer += 1;
-    if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+    if (this.currentPlayer == this.players.length) {
+      this.currentPlayer = 0;
+    }
   }
 
   getCurrentPlayerPlaces() {
@@ -154,9 +149,5 @@ export class Game {
   }
   getCurrentPlayerName() {
     return this.getCurrentPlayer().name;
-  }
-
-  getCurrentPlayerValue() {
-    return this.getCurrentPlayer().goldCoins;
   }
 }

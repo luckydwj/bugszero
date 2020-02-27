@@ -32,8 +32,13 @@ export class Player {
     console.log(`${this.playerName} is getting out of the penalty box`);
   }
 
-  updatePensltyBox(flag) {
-    this._isPenaltyBox = flag;
+  updatePensltyBox() {
+    this._isPenaltyBox = true;
+    console.log(`${this.playerName} was sent to the penalty box`);
+  }
+
+  didWin(): boolean {
+    return this._goldCoins !== 6;
   }
 
   get isPenaltyBox(): boolean {
