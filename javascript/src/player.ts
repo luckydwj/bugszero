@@ -17,6 +17,7 @@ export class Player {
 
   addValue() {
     this._goldCoins += 1;
+    console.log(`${this.playerName} now has ${this._goldCoins} Gold Coins.`);
   }
 
   updatePlace(roll) {
@@ -25,6 +26,10 @@ export class Player {
       this._place = this._place - 12;
     }
     console.log(`${this.playerName}'s new location is ${this._place}`);
+  }
+
+  freedFromPenaltyBox() {
+    console.log(`${this.playerName} is getting out of the penalty box`);
   }
 
   updatePensltyBox(flag) {

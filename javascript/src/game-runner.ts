@@ -1,9 +1,9 @@
 import { Game } from "./game";
 
-export function gameRunner(randomInt) {
+export function gameRunner(simulator) {
   // a simulator of a game
 
-  let notAWinner = false;
+
 
   const game = new Game();
 
@@ -11,13 +11,5 @@ export function gameRunner(randomInt) {
   game.add("Pat");
   game.add("Sue");
 
-  do {
-    game.roll(randomInt(6));
-
-    if (randomInt(10) == 7) {
-      notAWinner = game.wrongAnswer();
-    } else {
-      notAWinner = game.wasCorrectlyAnswered();
-    }
-  } while (notAWinner);
+  game.start(simulator);
 }

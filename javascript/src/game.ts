@@ -1,4 +1,5 @@
 import { Player } from "./player";
+import { Simulator } from "./Simulator";
 
 export class Game {
   rockQuestions: any[];
@@ -32,6 +33,15 @@ export class Game {
     this.players.push(new Player(playerName));
     console.log(`They are player number ${this.players.length}`);
     return true;
+  }
+
+  start(simulator: Simulator) {
+    let notAWinner = false;
+    do {
+      this.roll(simulator.simulateRolling());
+      const isloaser = simulator.simulateAnswering();
+      notAWinner = isloaser ? this.wrongAnswer() : this.wasCorrectlyAnswered();
+    } while (notAWinner);
   }
 
   currentCategory() {
@@ -84,10 +94,7 @@ export class Game {
     if (this.getCurrentPlayer().isPenaltyBox) {
       if (roll % 2 != 0) {
         this.isGettingOutOfPenaltyBox = true;
-
-        console.log(
-          `${this.getCurrentPlayerName()} is getting out of the penalty box`
-        );
+        this.getCurrentPlayer().freedFromPenaltyBox();
         this._movePlayerAndAskQuestion(roll);
       } else {
         console.log(
@@ -110,8 +117,7 @@ export class Game {
       if (this.isGettingOutOfPenaltyBox) {
         return this.correctAnswer();
       } else {
-        this.currentPlayer += 1;
-        if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
+        this.setNextPlayer();
         return true;
       }
     } else {
@@ -121,14 +127,8 @@ export class Game {
 
   correctAnswer() {
     console.log("Answer was correct!!!!");
-    this.currentPlayer += 1;
-    if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
-
+    this.setNextPlayer();
     this.getCurrentPlayer().addValue();
-    console.log(
-      `${this.getCurrentPlayerName()} now has ${this.getCurrentPlayerValue()} Gold Coins.`
-    );
-
     return !(this.getCurrentPlayerValue() == 6);
   }
 
@@ -137,9 +137,13 @@ export class Game {
     console.log(`${this.getCurrentPlayerName()} was sent to the penalty box`);
     this.getCurrentPlayer().updatePensltyBox(true);
 
+    this.setNextPlayer();
+    return true;
+  }
+
+  setNextPlayer() {
     this.currentPlayer += 1;
     if (this.currentPlayer == this.players.length) this.currentPlayer = 0;
-    return true;
   }
 
   getCurrentPlayerPlaces() {
